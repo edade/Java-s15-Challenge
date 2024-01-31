@@ -1,16 +1,18 @@
-package Books;
+package com.workintech.library.Books;
 
-import person.Author;
+import com.workintech.library.person.Author;
+import com.workintech.library.person.Reader;
 
-public class Book {
+public abstract class Book {
     private int Book_id;
     private Author author;
+    private Reader reader;
     private String name;
     private double price;
     private String status;
     private  int date_of_purchase;
 
-    public Book(int book_id, Author author, String name, double price, String status) {
+    public Book(int book_id, Author author,Reader reader, String name, double price, String status) {
         Book_id = book_id;
         this.author = author;
         this.name = name;
@@ -18,7 +20,7 @@ public class Book {
         this.status = status;
     }
 
-    public Book(int book_id, Author author, String name, double price, String status, int date_of_purchase) {
+    public Book(int book_id, Author author, Reader reader, String name, double price, String status, int date_of_purchase) {
         Book_id = book_id;
         this.author = author;
         this.name = name;
@@ -54,6 +56,26 @@ public class Book {
     public int getDate_of_purchase() {
         return date_of_purchase;
     }
+
+    public Reader getOwner(){
+        return this.reader;
+    }
+    public void changeOwner(Reader newOwner){
+        this.reader = newOwner;
+        System.out.println("reader changed to" + newOwner);
+    }
+
+    public void display() {
+        System.out.println("Book ID: " + Book_id);
+        System.out.println("Name: " + name);
+        System.out.println("Author: " + author);
+        System.out.println("Price: " + price);
+        System.out.println("Status: " + status);
+        System.out.println("Date of Purchase: " + date_of_purchase);
+    }
+
+
+
 
     @Override
     public String toString() {
