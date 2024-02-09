@@ -1,5 +1,4 @@
 package com.workintech.library.person;
-
 import java.util.Objects;
 
 public abstract class Person {
@@ -18,8 +17,6 @@ public abstract class Person {
     public void setName(String name) {
         this.name = name;
     }
-
-    public abstract void whoyouare();
 
     @Override
     public boolean equals(Object o) {

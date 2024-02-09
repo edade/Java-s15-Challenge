@@ -1,10 +1,10 @@
 package com.workintech.library;
-
 import com.workintech.library.Books.Book;
-import com.workintech.library.Books.Status;
+import com.workintech.library.Books.enums.Category;
+import com.workintech.library.Books.enums.Status;
 import com.workintech.library.person.Reader;
-
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +13,8 @@ public class Library {
     private List<Reader> readers;
 
     public Library(List<Book> books, List<Reader> readers) {
-        this.books = books;
-        this.readers = readers;
+        this.books=books;
+        this.readers=readers;
     }
 
     public List<Book> getBooks() {
@@ -27,29 +27,119 @@ public class Library {
 
     public void newBook(Book book) {
         books.add(book);
-        System.out.println("New book added to the library: " + book.getName());
     }
 
-    public void lendBook(Book book, Reader reader) {
-        if (book.getStatus().equals(Status.AVAILABLE)) {
-            book.setStatus(Status.BORROWED);
-            book.setReader(reader);
-            reader.borrowBook(book);
-            System.out.println("Book lent to reader: " + book.getName());
+    public Reader findReaderByBookName(String bookName) {
+        for (Book book : books) {
+            if (book.getName().equalsIgnoreCase(bookName) && book.getStatus().equals(Status.BORROWED)) {
+                return book.getReader();
+            }
+        }
+        return null;
+    } public void borrowBook(int bookId,Reader reader) {
+        Book bookToBorrow = findBookById(bookId);
+        if (bookToBorrow != null && bookToBorrow.getStatus() == Status.AVAILABLE) {
+            bookToBorrow.setStatus(Status.BORROWED);
+            bookToBorrow.setReader(reader);
+            reader.addBorrowedBook(bookToBorrow);
+            double priceToRefund = calculateRefundAmount(bookToBorrow);
+            reader.increaseDebt(priceToRefund);
+            System.out.println("The book " + bookToBorrow.getName() + " has been borrowed");
+            System.out.println(priceToRefund + " dolars taken from reader");
+        } else if (bookToBorrow == null) {
+            System.out.println("Book with ID " + bookId + " not found.");
         } else {
-            System.out.println("Book is not available for lending.");
+            System.out.println("The book " + bookToBorrow.getName() + " is not available for borrowing.");
         }
     }
-
-    public void takeBackBook(Book book, Reader reader) {
-        if (book.getStatus().equals(Status.BORROWED) && book.getReader().equals(reader)) {
+    public void returnBook(Book book,Reader reader) {
+        if (book.getStatus().equals(Status.BORROWED)) {
             book.setStatus(Status.AVAILABLE);
             book.setReader(null);
-            reader.returnBook(book);
+            double priceToRefund = calculateRefundAmount(book);
+            reader.decreaseDebt(priceToRefund);
+            reader.getBorrowedBooks().remove(book);
             System.out.println("Book taken back from reader: " + book.getName());
+            System.out.println(priceToRefund + " dolars given back to reader");
         } else {
-            System.out.println("You can't take back this book.");
+            System.out.println("This book is not borrowed");
         }
+    }
+    private double calculateRefundAmount(Book book) {
+        return book.getPrice();
+    }
+
+
+
+    public boolean removeBook(int bookId) {
+       for(Iterator<Book> iterator =  getBooks().iterator(); iterator.hasNext();){
+           Book book = iterator.next();
+            if (book.getBook_id() == bookId) {
+                iterator.remove();
+                return true;
+            }
+       }
+        return false;
+    }
+
+    public Book findBookById(int bookId) {
+        for (Book book : books) {
+            if (book.getBook_id() == bookId) {
+                return book;
+            }
+        }
+        return null;
+    }
+    public List<Book> listBooksInCategory(Category category) {
+        List<Book> booksByCategory = new ArrayList<>();
+        boolean foundBooks = false;
+        System.out.println("Books by the category " + category + ":");
+
+        for (Book book : books) {
+            if (book.getCategory().toString().equalsIgnoreCase(category.toString())) {
+                System.out.println(book);
+                foundBooks = true;
+            }
+        }
+
+        if (!foundBooks) {
+            System.out.println("No books found by the category ");
+        }
+        return booksByCategory;
+    }
+
+    public List<Book> listBooksByAuthor(String authorName) {
+        List<Book> booksByAuthor = new ArrayList<>();
+        boolean foundBooks = false;
+        System.out.println("Books by the author " + authorName + ":");
+
+        for (Book book : books) {
+            if (book.getAuthor().getName().equalsIgnoreCase(authorName)) {
+                System.out.println(book);
+                foundBooks = true;
+            }
+        }
+
+        if (!foundBooks) {
+            System.out.println("No books found by the author " + authorName);
+        }
+        return booksByAuthor;
+    }
+    public Book findBookByName(String bookName) {
+        for (Book book : books) {
+            if (book.getName().equals(bookName) ) {
+                return book;
+            }
+        }
+        return null;
+    }
+    public Book findBookByAuthor(String AuthorName) {
+        for (Book book : books) {
+            if (book.getName().equals(AuthorName) ) {
+                return book;
+            }
+        }
+        return null;
     }
 
     @Override
