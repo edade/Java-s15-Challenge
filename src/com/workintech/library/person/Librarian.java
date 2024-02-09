@@ -7,15 +7,18 @@ import java.util.List;
 
 public class Librarian extends Person {
 
-    private int password;
+    private String password;
 
-    public Librarian(String name, int password) {
+    public Librarian(String name, String password) {
         super(name);
         this.password = password;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
+    }
+    public boolean authenticate(String inputPassword) {
+        return this.password.equals(inputPassword);
     }
 
 

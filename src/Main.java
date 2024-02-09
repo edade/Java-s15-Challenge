@@ -3,13 +3,14 @@ import com.workintech.library.Books.enums.Category;
 import com.workintech.library.Books.enums.Status;
 import com.workintech.library.Library;
 import com.workintech.library.person.Author;
+import com.workintech.library.person.Librarian;
 import com.workintech.library.person.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static final String LIBRARIAN_PASSWORD = "default";
+    private static Librarian librarian = new Librarian("Eda", "default");
     private static Library library = new Library(new ArrayList<>(),new ArrayList<>());
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -59,7 +60,7 @@ public class Main {
             if (userType == 1) {
                 System.out.print("Enter the Librarian password: ");
                 String password = scanner.nextLine();
-                if (password.equals(LIBRARIAN_PASSWORD)) {
+                if (librarian.authenticate(password)) {
                     librarianActions(scanner);
                 } else {
                     System.out.println("Incorrect password. Please try again.");
@@ -115,7 +116,7 @@ public class Main {
         System.out.println("3. View available books");
         System.out.println("4. List all books in a category");
         System.out.println("5. List all books of selected author");
-        System.out.println("6. Return books");
+        System.out.println("6. Return book");
         System.out.print("Select an option: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
